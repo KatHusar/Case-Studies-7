@@ -15,8 +15,7 @@ prev.cat = vector(length = nrow(data))
 
 count = 0
 cutoff = 2*365
-for (i in 1:length(ID.vec))
-{
+for (i in 1:length(ID.vec)){
   if (i %% 300 == 0)
   {
     cat('progress: ', (i/length(ID.vec))*100, '% \n')
@@ -92,6 +91,14 @@ data$age = 21*(data$AGE_G == 1) + 27*(data$AGE_G == 2) + 32*(data$AGE_G == 3) + 
   42*(data$AGE_G == 5) + 47*(data$AGE_G == 6) + 52*(data$AGE_G == 7) + 57*(data$AGE_G == 8) + 
   62*(data$AGE_G == 9) + 67*(data$AGE_G == 10) + 72*(data$AGE_G == 11) + 77*(data$AGE_G == 12) + 
   85*(data$AGE_G == 13)
+
+
+# Change year into 3 categories: before coronary stents, before drug-eluting stents, and after both
+data = data|> mutate(year = case_when(
+  YRCATH_G %in% c(1,2) ~ 1, # coronary stents were approved by the FDA in 1994
+  YRCATH_G %in% c(3,4) ~ 2, # first drug-eluting stents were approved in 2003
+  TRUE ~ 3
+))
 
 # DSCABG, DSMI, DSPCI,DSSTROKE
 
