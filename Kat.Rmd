@@ -1,0 +1,94 @@
+---
+title: "Case Studies 7"
+author: "Kat Husar"
+date: '`r Sys.Date()`'
+output: html_document
+---
+
+### Dependencies,  and Set Up
+
+```yaml
+dependencies:
+  - R>=4.1  # https://www.r-project.org/
+  - V8  # https://v8.dev/
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,message=FALSE,error=FALSE,warning=FALSE)
+```
+
+### R Package Dependencies and set up 
+
+```{r pacman,echo=FALSE,results='hide'}
+if (!require(pacman)) install.packages("pacman")
+pacman::p_load(tidyverse, gridExtra, brms,readr, ggpubr, dplyr, stan,
+               latex2exp,gridtext,grid, ggplot2, GGally, tidyr, metafor, meta, survival)
+
+ggplot2::theme_set(ggplot2::theme_bw())
+```
+
+```{r}
+#directory for figures
+dir.create("figures", showWarnings = F)
+```
+
+### Data
+
+```{r,message=FALSE,error=FALSE,warning=FALSE,echo=FALSE}
+
+# Data
+
+data <- read_csv("dukecathr.csv")
+
+```
+
+
+```{r}
+S1 = Surv(time = data$DAYS2LKA, event = data$DEATH)
+```
+
+```{r}
+fit1 = survfit( S1~1)
+```
+
+```{r}
+plot(fit1, xlab = "t", ylab = expression(hat(S)*"(t)"), main = "Kaplan-Meier estimate")
+```
+
+
+
+
+```{r}
+s2 = survreg(Surv(data$DAYS2LKA + 0.0001,data$DEATH)~1 ,  dist='exponential')
+summary(s2)
+```
+
+
+```{r}
+T = data$DAYS2LKA
+plot(fit1, xlab = "t", ylab = expression(hat(S)*"(t)"))
+lines(T,1-pexp(T,exp(-8.69611)),xlab="t",ylab=expression(hat(S)*"(t)"), type = "p", cex = .2, col = "red")
+legend('topright' ,legend = c("Kaplan-Meier","Exp distribution"), lwd=c(5,2), col=c("black","red") )
+```
+
+$S(t) = \exp(-\exp(-8.70)t)$
+
+
+```{r}
+s3 = survreg(Surv(data$DAYS2LKA + 0.0001,data$DEATH)~1 ,dist='weibull')
+summary(s3)
+```
+
+```{r}
+plot(fit1, xlab = "t", ylab = expression(hat(S)*"(t)"), main = "Survival function estimates")
+lines(T,1-pexp(T,exp(-8.69611)),xlab="t",ylab=expression(hat(S)*"(t)"), type = "p", cex = .2, col = "red")
+lines(T,1-pweibull(T,1/1.11,exp(8.71991 )), type = "p", cex = .2, col = "green")
+legend('topright' ,legend = c("Kaplan-Meier","Exp distrib", "Weibull distrib"), lwd=c(2,2,2), col=c("black","red", "green") )
+```
+$S(t) = \exp(-\exp(-8.72/1.11)t^{1/1.11})$
+Scale = 1.11
+$\gamma = 1/\sigma = 1/1.11$
+$\tau = \lambda^\gamma = \exp(-8.72/1.11)$
+
+
