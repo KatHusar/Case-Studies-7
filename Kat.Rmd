@@ -89,6 +89,6 @@ legend('topright' ,legend = c("Kaplan-Meier","Exp distrib", "Weibull distrib"), 
 $S(t) = \exp(-\exp(-8.72/1.11)t^{1/1.11})$
 Scale = 1.11
 $\gamma = 1/\sigma = 1/1.11$
-$\alpha = \lambda^\gamma = \exp(-8.72/1.11)$
+$\tau = \lambda^\gamma = \exp(-8.72/1.11)$
 
 
