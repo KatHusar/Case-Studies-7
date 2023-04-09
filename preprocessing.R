@@ -139,7 +139,7 @@ data_full <- complete(mice_obj)
 
 
 
-survmodel = survreg(Surv(survtime + 0.1, death_adj)~1 + age + as.factor(GENDER) + as.factor(RACE_G) + as.factor(ACS) + 
+survmodel = survreg(Surv(survtime + 0.1, death_adj)~1 + age + as.factor(GENDER) + as.factor(RACE_G) + as.factor(year) +  as.factor(ACS) + 
                       as.factor(CHF_severity) + as.factor(past_CABG) + as.factor(past_MI) + as.factor(past_PCI) +  
                       as.factor(HXANGINA) + as.factor(HXCEREB) + as.factor(HXCOPD) + as.factor(HXDIAB) + as.factor(HXHTN) +
                       as.factor(HXHYL) + as.factor(HXMI) + as.factor(HXSMOKE) + NUMPRMI + DIASBP_R + PULSE_R + SYSBP_R + 
