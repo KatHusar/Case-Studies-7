@@ -140,6 +140,24 @@ data_full <- complete(mice_obj)
 
 saveRDS(data_full, "data_full.RDS")
 
+# Standardize using the method by Andrew Gelman
+cont.names = c('age', 'DIASBP_R', 'PULSE_R', 'SYSBP_R', 'BMI', 'CREATININE_R', 'HDL_R', 'LDL_R', 'TOTCHOL_R',
+               'GRAFTST', 'LADST', 'LCXST', 'LMST', 'LVEF_R', 'PRXLADST', 'RCAST')
+
+data_full_std = data_full
+
+for (i in 1:ncol(data_full_std))
+{
+  if (names(data_full_std)[i] %in% cont.names)
+  {
+    #print(names(data_full_std)[i] )
+    data_full_std[,i] = (data_full_std[,i] - mean(data_full_std[,i]))/ (2*sd(data_full_std[,i]))
+  }
+}
+
+head(data_full_std)
+
+
 
 survmodel = survreg(Surv(survtime + 0.1, death_adj)~1 + age + GENDER + RACE_G + year +  ACS + 
                       CHF_severity + past_CABG + past_MI + past_PCI +  
@@ -147,7 +165,7 @@ survmodel = survreg(Surv(survtime + 0.1, death_adj)~1 + age + GENDER + RACE_G + 
                       HXHYL  + HXSMOKE + NUMPRMI + DIASBP_R + PULSE_R + SYSBP_R + #+ as.factor(HXMI)
                       + CBRUITS + BMI + S3 + CREATININE_R + HDL_R + LDL_R + TOTCHOL_R + CATHAPPR +
                       DIAGCATH + INTVCATH + CORDOM + GRAFTST + LADST + LCXST + LMST + LVEF_R +
-                      NUMDZV + PRXLADST + RCAST, data = data_full, dist='weibull')
+                      NUMDZV + PRXLADST + RCAST, data = data_full_std, dist='weibull')
 summary(survmodel)
 
 
@@ -177,7 +195,7 @@ ggplot(df_signif, aes(x =variable, y = value)) +
   theme( legend.position = "none", axis.title = element_text(size = 20), 
          plot.title = element_text(size = 22),
          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
- 
+
 
 
 
@@ -201,7 +219,7 @@ coxmodel <- coxph(Surv(survtime + 0.1, death_adj) ~ age + GENDER + RACE_G + year
                     HXHYL  + HXSMOKE + NUMPRMI + DIASBP_R + PULSE_R + SYSBP_R + #+ as.factor(HXMI)
                     + CBRUITS + BMI + S3 + CREATININE_R + HDL_R + LDL_R + TOTCHOL_R + CATHAPPR +
                     DIAGCATH + INTVCATH + CORDOM + GRAFTST + LADST + LCXST + LMST + LVEF_R +
-                    NUMDZV + PRXLADST + RCAST, data = data_full)
+                    NUMDZV + PRXLADST + RCAST, data = data_full_std)
 summary(coxmodel)
 
 coeffs2 = coxmodel$coefficients
@@ -214,7 +232,7 @@ df_results_cox = data.frame(value = coeffs2, Q2.5= low2, Q97.5 = high2)
 df_results_cox$variable = rownames(df_results_cox)
 
 df_results_cox$variable <- factor(df_results_cox$variable, 
-                              levels = df_results_cox$variable[order(df_results_cox$value)])
+                                  levels = df_results_cox$variable[order(df_results_cox$value)])
 df_signif_cox = df_results_cox[df_results_cox$Q2.5 > 0 | df_results_cox$Q97.5 < 0,]
 ggplot(df_signif_cox, aes(x =variable, y = value)) + 
   geom_errorbar(aes(ymax = Q97.5, ymin = Q2.5),width=0.2) +
@@ -255,9 +273,4 @@ plot(efit, fun='cumhaz', mark.time=FALSE, bty='n', conf.int=FALSE, lwd=1, las=1,
      xlab='Residual', ylab='Cumulative hazard', xlim=lim, ylim=lim)
 ciband(efit, fun=function(x) -log(x))
 lines(lim, lim, col='red', lwd=1)
-
-
-
-
-
 
