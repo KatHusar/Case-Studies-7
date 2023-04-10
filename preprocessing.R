@@ -2,6 +2,9 @@ library(tidyverse)
 library(dplyr)
 library(mice)
 library(survival)
+library(ggfortify)
+library(ggsurvfit)
+
 
 # Pre-processing
 
@@ -168,7 +171,7 @@ survmodel = survreg(Surv(survtime + 0.1, death_adj)~1 + age + GENDER + RACE_G + 
                       NUMDZV + PRXLADST + RCAST, data = data_full_std, dist='weibull')
 summary(survmodel)
 
-
+xibeta = survmodel$linear.predictors
 
 
 coeffs = survmodel$coefficients
@@ -274,4 +277,3 @@ plot(efit, fun='cumhaz', mark.time=FALSE, bty='n', conf.int=FALSE, lwd=1, las=1,
      xlab='Residual', ylab='Cumulative hazard', xlim=lim, ylim=lim)
 ciband(efit, fun=function(x) -log(x))
 lines(lim, lim, col='red', lwd=1)
-
