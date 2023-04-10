@@ -45,7 +45,7 @@ data <- read_csv("dukecathr.csv")
 
 
 ```{r}
-S1 = Surv(time = data$DAYS2LKA, event = data$DEATH)
+S1 = Surv(time = data$DAYS2LKA+0.0001, event = data$DEATH)
 ```
 
 ```{r}
@@ -91,4 +91,13 @@ Scale = 1.11
 $\gamma = 1/\sigma = 1/1.11$
 $\tau = \lambda^\gamma = \exp(-8.72/1.11)$
 
+
+
+```{r}
+s4 = survreg(Surv(data$DAYS2LKA + 0.0001,data$DEATH)~1 ,  dist='lognormal')
+summary(s4)
+```
+```{r}
+sigma = s4
+```
 

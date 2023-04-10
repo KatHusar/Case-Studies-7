@@ -206,3 +206,6 @@ ggplot(df_signif_cox, aes(x =variable, y = value)) +
   theme( legend.position = "none", axis.title = element_text(size = 20), 
          plot.title = element_text(size = 22),
          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+
+
+saveRDS(data_full, "data_full.RDS")
