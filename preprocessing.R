@@ -168,7 +168,8 @@ ggplot(df_signif, aes(x =variable, y = value)) +
   ylab("Estimate") +
   xlab("Variable") + 
   labs(title = "95% CI for coefficients")+
+  theme_bw()+
   theme( legend.position = "none", axis.title = element_text(size = 20), 
          plot.title = element_text(size = 22),
-         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  theme_bw()
+         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+ 
