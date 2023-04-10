@@ -98,6 +98,15 @@ s4 = survreg(Surv(data$DAYS2LKA + 0.0001,data$DEATH)~1 ,  dist='lognormal')
 summary(s4)
 ```
 ```{r}
-sigma = s4
+mu = s4$icoef[1]
+sigma = exp(s4$icoef[2])
+
+
+
+plot(fit1, xlab = "t", ylab = expression(hat(S)*"(t)"), main = "Survival function estimates")
+lines(T,1-pexp(T,exp(-8.69611)),xlab="t",ylab=expression(hat(S)*"(t)"), type = "p", cex = .1, col = "red")
+lines(T,1-pweibull(T,1/1.11,exp(8.71991 )), type = "p", cex = .1, col = "green")
+lines(T, 1 - pnorm((log(T) - mu)/sigma), type = "p", cex = .1, col = "blue")
+legend('topright' ,legend = c("Kaplan-Meier","Exponential", "Weibull", "Log-normal"), lwd=c(2,2,2,2), col=c("black","red", "green", "blue") )
 ```
 
