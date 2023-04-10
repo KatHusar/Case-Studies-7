@@ -157,7 +157,11 @@ high = confint(survmodel, level=.95)[-1,2]
 
 df_results = data.frame(value = coeffs[-1], Q2.5= low, Q97.5 = high)
 df_results$variable = rownames(df_results)
-ggplot(df_results, aes(x =variable, y = value)) + 
+
+df_results$variable <- factor(df_results$variable, 
+                              levels = df_results$variable[order(df_results$value)])
+df_signif = df_results[df_results$Q2.5 > 0 | df_results$Q97.5 < 0,]
+ggplot(df_signif, aes(x =variable, y = value)) + 
   geom_errorbar(aes(ymax = Q97.5, ymin = Q2.5),width=0.2) +
   geom_point(position = position_dodge(0.9)) +
   geom_hline(yintercept=0, color = "red")+
@@ -166,4 +170,5 @@ ggplot(df_results, aes(x =variable, y = value)) +
   labs(title = "95% CI for coefficients")+
   theme( legend.position = "none", axis.title = element_text(size = 20), 
          plot.title = element_text(size = 22),
-         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme_bw()
