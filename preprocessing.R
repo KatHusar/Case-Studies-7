@@ -138,6 +138,8 @@ mice_obj <- mice(data = data_mice, m = 1)
 data_full <- complete(mice_obj)
 
 
+saveRDS(data_full, "data_full.RDS")
+
 
 survmodel = survreg(Surv(survtime + 0.1, death_adj)~1 + age + GENDER + RACE_G + year +  ACS + 
                       CHF_severity + past_CABG + past_MI + past_PCI +  
@@ -151,6 +153,9 @@ summary(survmodel)
 
 
 coeffs = survmodel$coefficients
+lambda = exp(coeffs[1])
+gamma = 1/survmodel$scale
+
 
 low = confint(survmodel, level=.95)[-1,1]
 high = confint(survmodel, level=.95)[-1,2]
@@ -173,6 +178,22 @@ ggplot(df_signif, aes(x =variable, y = value)) +
          plot.title = element_text(size = 22),
          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Cox model
 
 coxmodel <- coxph(Surv(survtime + 0.1, death_adj) ~ age + GENDER + RACE_G + year +  ACS + 
                     CHF_severity + past_CABG + past_MI + past_PCI +  
@@ -208,8 +229,6 @@ ggplot(df_signif_cox, aes(x =variable, y = value)) +
          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
 
 
-saveRDS(data_full, "data_full.RDS")
-
 
 
 
@@ -236,3 +255,9 @@ plot(efit, fun='cumhaz', mark.time=FALSE, bty='n', conf.int=FALSE, lwd=1, las=1,
      xlab='Residual', ylab='Cumulative hazard', xlim=lim, ylim=lim)
 ciband(efit, fun=function(x) -log(x))
 lines(lim, lim, col='red', lwd=1)
+
+
+
+
+
+
