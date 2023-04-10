@@ -209,3 +209,30 @@ ggplot(df_signif_cox, aes(x =variable, y = value)) +
 
 
 saveRDS(data_full, "data_full.RDS")
+
+
+
+
+
+
+
+### diagnoatics
+
+
+source("http://myweb.uiowa.edu/pbreheny/7210/f18/notes/fun.R")
+
+sfit <- survfit(coxmodel)
+H0 <- -log(sfit$surv)
+H <- approxfun(c(0, sfit$time), c(0, H0), method='constant')
+e1 <- H(coxmodel$y[,1])*exp(coxmodel$linear.predictors)
+e2 <- coxmodel$y[,2]-residuals(coxmodel)
+head(e1)
+head(e2)
+
+# Slide 5: Diagnostic plot
+efit <- survfit(Surv(e1, coxmodel$y[,2])~1)
+lim <- c(0,15)
+plot(efit, fun='cumhaz', mark.time=FALSE, bty='n', conf.int=FALSE, lwd=1, las=1,
+     xlab='Residual', ylab='Cumulative hazard', xlim=lim, ylim=lim)
+ciband(efit, fun=function(x) -log(x))
+lines(lim, lim, col='red', lwd=1)
