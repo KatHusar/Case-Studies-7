@@ -139,14 +139,31 @@ data_full <- complete(mice_obj)
 
 
 
-survmodel = survreg(Surv(survtime + 0.1, death_adj)~1 + age + as.factor(GENDER) + as.factor(RACE_G) + as.factor(year) +  as.factor(ACS) + 
-                      as.factor(CHF_severity) + as.factor(past_CABG) + as.factor(past_MI) + as.factor(past_PCI) +  
-                      as.factor(HXANGINA) + as.factor(HXCEREB) + as.factor(HXCOPD) + as.factor(HXDIAB) + as.factor(HXHTN) +
-                      as.factor(HXHYL) + as.factor(HXMI) + as.factor(HXSMOKE) + NUMPRMI + DIASBP_R + PULSE_R + SYSBP_R + 
-                      + as.factor(CBRUITS) + BMI + as.factor(S3) + CREATININE_R + HDL_R + LDL_R + TOTCHOL_R + as.factor(CATHAPPR) +
-                      as.factor(DIAGCATH) + as.factor(INTVCATH) + as.factor(CORDOM) + GRAFTST + LADST + LCXST + LMST + LVEF_R +
+survmodel = survreg(Surv(survtime + 0.1, death_adj)~1 + age + GENDER + RACE_G + year +  ACS + 
+                      CHF_severity + past_CABG + past_MI + past_PCI +  
+                      HXANGINA + HXCEREB + HXCOPD + HXDIAB + HXHTN +
+                      HXHYL  + HXSMOKE + NUMPRMI + DIASBP_R + PULSE_R + SYSBP_R + #+ as.factor(HXMI)
+                      + CBRUITS + BMI + S3 + CREATININE_R + HDL_R + LDL_R + TOTCHOL_R + CATHAPPR +
+                      DIAGCATH + INTVCATH + CORDOM + GRAFTST + LADST + LCXST + LMST + LVEF_R +
                       NUMDZV + PRXLADST + RCAST, data = data_full, dist='weibull')
 summary(survmodel)
 
 
 
+coeffs = survmodel$coefficients
+
+low = confint(survmodel, level=.95)[-1,1]
+high = confint(survmodel, level=.95)[-1,2]
+
+df_results = data.frame(value = coeffs[-1], Q2.5= low, Q97.5 = high)
+df_results$variable = rownames(df_results)
+ggplot(df_results, aes(x =variable, y = value)) + 
+  geom_errorbar(aes(ymax = Q97.5, ymin = Q2.5),width=0.2) +
+  geom_point(position = position_dodge(0.9)) +
+  geom_hline(yintercept=0, color = "red")+
+  ylab("Estimate") +
+  xlab("Variable") + 
+  labs(title = "95% CI for coefficients")+
+  theme( legend.position = "none", axis.title = element_text(size = 20), 
+         plot.title = element_text(size = 22),
+         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
