@@ -128,7 +128,7 @@ nrow(data_complete)
 data_mice = data_proc %>%
   mutate(GENDER = factor(GENDER), RACE_G = factor(RACE_G), ACS = factor(ACS), 
          CHF_severity = factor(CHF_severity), past_CABG = factor(past_CABG), past_MI = factor(past_MI), 
-         past_PCI = factor(past_PCI), HXANGINA = factor(HXANGINA), HXCEREB = factor(HXCEREB), HXCEREB = factor(HXCOPD),
+         past_PCI = factor(past_PCI), HXANGINA = factor(HXANGINA), HXCEREB = factor(HXCEREB), HXCOPD= factor(HXCOPD),
          HXDIAB = factor(HXDIAB), HXHTN = factor(HXHTN), HXHYL = factor(HXHYL), HXMI = factor(HXMI),
          HXSMOKE = factor(HXSMOKE), CBRUITS = factor(CBRUITS), S3 = factor(S3), CATHAPPR = factor(CATHAPPR),
          DIAGCATH = factor(DIAGCATH), INTVCATH = factor(INTVCATH), CORDO = factor(CORDOM))
