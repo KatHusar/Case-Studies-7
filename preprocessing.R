@@ -111,7 +111,7 @@ data$subsequent_stroke = 1*(!is.na(data$DSSTROKE) & (data$DSSTROKE <= data$survt
 
 # Definitely exclude: FUPROTCL, RDAYSFROMINDEX, HXCHF (we already have CHF severity), NUMPRMI ?
 
-data_proc = data %>% select(c('survtime', 'death_adj', 'age', 'GENDER', 'RACE_G', 'ACS', 'CHF_severity', 'past_CABG', 'past_MI', 'past_PCI', 
+data_proc = data %>% select(c('survtime', 'death_adj', 'age','year', 'GENDER', 'RACE_G', 'ACS', 'CHF_severity', 'past_CABG', 'past_MI', 'past_PCI', 
                               'HXANGINA', 'HXCEREB', 'HXCOPD', 'HXDIAB', 'HXHTN', 'HXHYL', 'HXMI', 'HXSMOKE',
                               'NUMPRMI', 'DIASBP_R', 'PULSE_R', 'SYSBP_R', 'CBRUITS', 'BMI', 'S3', 
                               'CREATININE_R', 'HDL_R', 'LDL_R', 'TOTCHOL_R',
@@ -146,4 +146,7 @@ survmodel = survreg(Surv(survtime + 0.1, death_adj)~1 + age + as.factor(GENDER) 
                       + as.factor(CBRUITS) + BMI + as.factor(S3) + CREATININE_R + HDL_R + LDL_R + TOTCHOL_R + as.factor(CATHAPPR) +
                       as.factor(DIAGCATH) + as.factor(INTVCATH) + as.factor(CORDOM) + GRAFTST + LADST + LCXST + LMST + LVEF_R +
                       NUMDZV + PRXLADST + RCAST, data = data_full, dist='weibull')
+summary(survmodel)
+
+
 
