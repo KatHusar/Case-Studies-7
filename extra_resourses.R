@@ -218,3 +218,6 @@ plot(D2[,4], type='h', col=col, bty='n', las=1, lwd=1.5,
      xlab='Index (ordered by time on study)', ylab=expression(hat(Delta)[ij]))
 toplegend(legend=c("High bili", "Low bili"), lwd=1.5, col=pal(2))
 mtext("Original scale", 3, line=4)
+
+
+#  https://myweb.uiowa.edu/pbreheny/7210/f19/notes/11-12.pdf

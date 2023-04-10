@@ -104,9 +104,8 @@ sigma = exp(s4$icoef[2])
 
 
 plot(fit1, xlab = "t", ylab = expression(hat(S)*"(t)"), main = "Survival function estimates")
-lines(T,1-pexp(T,exp(-8.69611)),xlab="t",ylab=expression(hat(S)*"(t)"), type = "p", cex = .1, col = "red")
 lines(T,1-pweibull(T,1/1.11,exp(8.71991 )), type = "p", cex = .1, col = "green")
 lines(T, 1 - pnorm((log(T) - mu)/sigma), type = "p", cex = .1, col = "blue")
-legend('topright' ,legend = c("Kaplan-Meier","Exponential", "Weibull", "Log-normal"), lwd=c(2,2,2,2), col=c("black","red", "green", "blue") )
+legend('topright' ,legend = c("Kaplan-Meier", "Weibull", "Log-normal"), lwd=c(2,2,2), col=c("black", "green", "blue") )
 ```
 
