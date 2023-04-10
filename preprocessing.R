@@ -173,3 +173,36 @@ ggplot(df_signif, aes(x =variable, y = value)) +
          plot.title = element_text(size = 22),
          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
  
+
+coxmodel <- coxph(Surv(survtime + 0.1, death_adj) ~ age + GENDER + RACE_G + year +  ACS + 
+                    CHF_severity + past_CABG + past_MI + past_PCI +  
+                    HXANGINA + HXCEREB + HXCOPD + HXDIAB + HXHTN +
+                    HXHYL  + HXSMOKE + NUMPRMI + DIASBP_R + PULSE_R + SYSBP_R + #+ as.factor(HXMI)
+                    + CBRUITS + BMI + S3 + CREATININE_R + HDL_R + LDL_R + TOTCHOL_R + CATHAPPR +
+                    DIAGCATH + INTVCATH + CORDOM + GRAFTST + LADST + LCXST + LMST + LVEF_R +
+                    NUMDZV + PRXLADST + RCAST, data = data_full)
+summary(coxmodel)
+
+coeffs2 = coxmodel$coefficients
+
+
+low2 = confint(coxmodel, level=.95)[,1]
+high2 = confint(coxmodel, level=.95)[,2]
+
+df_results_cox = data.frame(value = coeffs2, Q2.5= low2, Q97.5 = high2)
+df_results_cox$variable = rownames(df_results_cox)
+
+df_results_cox$variable <- factor(df_results_cox$variable, 
+                              levels = df_results_cox$variable[order(df_results_cox$value)])
+df_signif_cox = df_results_cox[df_results_cox$Q2.5 > 0 | df_results_cox$Q97.5 < 0,]
+ggplot(df_signif_cox, aes(x =variable, y = value)) + 
+  geom_errorbar(aes(ymax = Q97.5, ymin = Q2.5),width=0.2) +
+  geom_point(position = position_dodge(0.9)) +
+  geom_hline(yintercept=0, color = "red")+
+  ylab("Estimate") +
+  xlab("Variable") + 
+  labs(title = "95% CI for coefficients")+
+  theme_bw()+
+  theme( legend.position = "none", axis.title = element_text(size = 20), 
+         plot.title = element_text(size = 22),
+         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
