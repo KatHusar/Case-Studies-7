@@ -170,6 +170,7 @@ summary(survmodel)
 
 
 
+
 coeffs = survmodel$coefficients
 lambda = exp(coeffs[1])
 gamma = 1/survmodel$scale
@@ -190,7 +191,7 @@ ggplot(df_signif, aes(x =variable, y = value)) +
   geom_hline(yintercept=0, color = "red")+
   ylab("Estimate") +
   xlab("Variable") + 
-  labs(title = "95% CI for coefficients")+
+  labs(title = "95% CI for significant coefficients, AFT model")+
   theme_bw()+
   theme( legend.position = "none", axis.title = element_text(size = 20), 
          plot.title = element_text(size = 22),
