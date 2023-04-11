@@ -188,17 +188,16 @@ df_results$variable = rownames(df_results)
 df_results$variable <- factor(df_results$variable, 
                               levels = df_results$variable[order(df_results$value)])
 df_signif = df_results[df_results$Q2.5 > 0 | df_results$Q97.5 < 0,]
-ggplot(df_signif, aes(x =variable, y = value)) + 
-  geom_errorbar(aes(ymax = Q97.5, ymin = Q2.5),width=0.2) +
+ggplot(df_signif, aes(y =variable, x = exp(value))) + 
+  geom_errorbar(aes(xmax = exp(Q97.5), xmin =exp(Q2.5)),width=0.2) +
   geom_point(position = position_dodge(0.9)) +
-  geom_hline(yintercept=0, color = "red")+
-  ylab("Estimate") +
-  xlab("Variable") + 
-  labs(title = "95% CI for significant coefficients, AFT model")+
+  geom_vline(xintercept=1, color = "red", linetype = "dashed")+
+  xlab(expression("decreased survival"  %<->% "increased survival")) + 
+  ylab("Variable") + 
+  labs(title = "95% CI for change in survival time, AFT model")+
   theme_bw()+
   theme( legend.position = "none", axis.title = element_text(size = 20), 
-         plot.title = element_text(size = 22),
-         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+         plot.title = element_text(size = 22)) 
 
 
 
@@ -238,17 +237,16 @@ df_results_cox$variable = rownames(df_results_cox)
 df_results_cox$variable <- factor(df_results_cox$variable, 
                                   levels = df_results_cox$variable[order(df_results_cox$value)])
 df_signif_cox = df_results_cox[df_results_cox$Q2.5 > 0 | df_results_cox$Q97.5 < 0,]
-ggplot(df_signif_cox, aes(x =variable, y = value)) + 
-  geom_errorbar(aes(ymax = Q97.5, ymin = Q2.5),width=0.2) +
+ggplot(df_signif_cox, aes(y =variable, x = exp(value))) + 
+  geom_errorbar(aes(xmax = exp(Q97.5), xmin = exp(Q2.5)),width=0.2) +
   geom_point(position = position_dodge(0.9)) +
-  geom_hline(yintercept=0, color = "red")+
-  ylab("Estimate") +
-  xlab("Variable") + 
-  labs(title = "95% CI for coefficients")+
+  geom_vline(xintercept=1, color = "red", linetype = "dashed")+
+  xlab(expression("lower hazard"  %<->% "higher hazard")) +
+  ylab("Variable") + 
+  labs(title = "95% CI hazard ratio, Cox model")+
   theme_bw()+
   theme( legend.position = "none", axis.title = element_text(size = 20), 
-         plot.title = element_text(size = 22),
-         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+         plot.title = element_text(size = 22)) 
 
 
 
@@ -257,7 +255,7 @@ ggplot(df_signif_cox, aes(x =variable, y = value)) +
 
 
 
-### diagnoatics
+### diagnostics
 
 
 source("http://myweb.uiowa.edu/pbreheny/7210/f18/notes/fun.R")
