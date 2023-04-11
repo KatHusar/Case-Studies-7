@@ -254,29 +254,29 @@ sigma = survmodel$scale
 ##### S3:
 
 
-exp(-coeffs["S31"])/sigma
+exp(-coeffs["S31"]/sigma)
 exp(coeffs2["S31"])
 
 ### Capp right
-exp(-coeffs["CATHAPPR1"])/sigma
+exp(-coeffs["CATHAPPR1"]/sigma)
 exp(coeffs2["CATHAPPR1"])
 
 ### Capp left
-exp(-coeffs["CATHAPPR2"])/sigma
+exp(-coeffs["CATHAPPR2"]/sigma)
 exp(coeffs2["CATHAPPR2"])
 
 ### Capp left and right
-exp(-coeffs["CATHAPPR3"])/sigma
+exp(-coeffs["CATHAPPR3"]/sigma)
 exp(coeffs2["CATHAPPR3"])
 
 
 
 ### Past CABG1
-exp(-coeffs["past_CABG1"])/sigma
+exp(-coeffs["past_CABG1"]/sigma)
 exp(coeffs2["past_CABG1"])
 
 ### Past CABG1
-exp(-coeffs["past_CABG2"])/sigma
+exp(-coeffs["past_CABG2"]/sigma)
 exp(coeffs2["past_CABG2"])
 
 
