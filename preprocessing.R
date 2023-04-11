@@ -140,7 +140,6 @@ data_mice = data_proc %>%
 mice_obj <- mice(data = data_mice, m = 1)
 data_full <- complete(mice_obj)
 
-
 saveRDS(data_full, "data_full.RDS")
 
 # Standardize using the method by Andrew Gelman
@@ -250,9 +249,35 @@ ggplot(df_signif_cox, aes(y =variable, x = exp(value))) +
 
 
 
+#### Table
+sigma = survmodel$scale
+##### S3:
+
+
+exp(-coeffs["S31"])/sigma
+exp(coeffs2["S31"])
+
+### Capp right
+exp(-coeffs["CATHAPPR1"])/sigma
+exp(coeffs2["CATHAPPR1"])
+
+### Capp left
+exp(-coeffs["CATHAPPR2"])/sigma
+exp(coeffs2["CATHAPPR2"])
+
+### Capp left and right
+exp(-coeffs["CATHAPPR3"])/sigma
+exp(coeffs2["CATHAPPR3"])
 
 
 
+### Past CABG1
+exp(-coeffs["past_CABG1"])/sigma
+exp(coeffs2["past_CABG1"])
+
+### Past CABG1
+exp(-coeffs["past_CABG2"])/sigma
+exp(coeffs2["past_CABG2"])
 
 
 ### diagnostics
