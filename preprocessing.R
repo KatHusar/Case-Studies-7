@@ -300,3 +300,85 @@ plot(efit, fun='cumhaz', mark.time=FALSE, bty='n', conf.int=FALSE, lwd=1, las=1,
      xlab='Residual', ylab='Cumulative hazard', xlim=lim, ylim=lim)
 ciband(efit, fun=function(x) -log(x))
 lines(lim, lim, col='red', lwd=1)
+
+
+
+
+################ OUT-OF SAMPLE PERFORMANCE #######################
+# Concordance
+get.concordance = function(pred_test, truth_test, death)
+{
+  nvalid = length(pred_test)
+  agree.count = 0
+  pair.count = 0
+  for (i in 2:nvalid)
+  {
+    for (j in 1:(i-1))
+    {
+      pair.count = pair.count + death[j]
+      agree.count = agree.count + death[j]*((pred_test[i] >= pred_test[j]) == (truth_test[i] >= truth_test[j]))
+    }
+  }
+  
+  concord = agree.count / pair.count
+  return(concord)
+}
+
+ndata = nrow(data_full_std)
+death_ind = which(data_full$death_adj == 1)
+nvalid = floor(0.1*nrow(data_full_std))
+
+set.seed(4)
+index = sample(1:nrow(data_full_std), size = nvalid, replace = FALSE)
+
+test_data = data_full_std[index,]
+train_data = data_full_std[-index,]
+
+# AFT
+
+survtrain_aft = survreg(Surv(survtime + 0.1, death_adj)~1 + age + GENDER + RACE_G + year +  ACS + 
+                          CHF_severity + past_CABG + past_MI + past_PCI +  
+                          HXANGINA + HXCEREB + HXCOPD + HXDIAB + HXHTN +
+                          HXHYL  + HXSMOKE + NUMPRMI + DIASBP_R + PULSE_R + SYSBP_R + #+ as.factor(HXMI)
+                          + CBRUITS + BMI + S3 + CREATININE_R + HDL_R + LDL_R + TOTCHOL_R + CATHAPPR +
+                          DIAGCATH + INTVCATH + CORDOM + GRAFTST + LADST + LCXST + LMST + LVEF_R +
+                          NUMDZV + PRXLADST + RCAST, data = train_data, dist='weibull')
+
+pred_test_aft <- predict(survtrain_aft, newdata=test_data, type='response', se=FALSE)
+truth_test = test_data$survtime
+
+coxmodel_train <- coxph(Surv(survtime + 0.1, death_adj) ~ age + GENDER + RACE_G + year +  ACS + 
+                          CHF_severity + past_CABG + past_MI + past_PCI +  
+                          HXANGINA + HXCEREB + HXCOPD + HXDIAB + HXHTN +
+                          HXHYL  + HXSMOKE + NUMPRMI + DIASBP_R + PULSE_R + SYSBP_R + #+ as.factor(HXMI)
+                          + CBRUITS + BMI + S3 + CREATININE_R + HDL_R + LDL_R + TOTCHOL_R + CATHAPPR +
+                          DIAGCATH + INTVCATH + CORDOM + GRAFTST + LADST + LCXST + LMST + LVEF_R +
+                          NUMDZV + PRXLADST + RCAST, data = train_data)
+
+pred_test_cox <- predict(coxmodel_train, newdata=test_data, type='risk', se=FALSE)
+
+
+survtrain_aft_loglog = survreg(Surv(survtime + 0.1, death_adj)~1 + age + GENDER + RACE_G + year +  ACS + 
+                                 CHF_severity + past_CABG + past_MI + past_PCI +  
+                                 HXANGINA + HXCEREB + HXCOPD + HXDIAB + HXHTN +
+                                 HXHYL  + HXSMOKE + NUMPRMI + DIASBP_R + PULSE_R + SYSBP_R + #+ as.factor(HXMI)
+                                 + CBRUITS + BMI + S3 + CREATININE_R + HDL_R + LDL_R + TOTCHOL_R + CATHAPPR +
+                                 DIAGCATH + INTVCATH + CORDOM + GRAFTST + LADST + LCXST + LMST + LVEF_R +
+                                 NUMDZV + PRXLADST + RCAST, data = train_data, dist='lognormal')
+
+
+pred_test_aft_loglog <- predict(survtrain_aft_loglog, newdata=test_data, type='response', se=FALSE)
+
+
+# AFT Concordance
+concord.aft = get.concordance(pred_test = pred_test_aft, truth_test = truth_test, death = data_full_std$death_adj)
+concord.aft
+
+# Cox Concordance - the prediction is for risk, so we take negative
+concord.cox = get.concordance(pred_test = -pred_test_cox, truth_test = truth_test, death = data_full_std$death_adj)
+concord.cox
+
+
+#############################################
+
+
